@@ -1,25 +1,50 @@
-# External Network Recon & Identity Analysis Lab
+# External Attack Surface Recon & Identity Analysis Lab
 
-This lab focuses on external network reconnaissance and identity system analysis.
+## Objective
+
+This lab demonstrates how an attacker performs external reconnaissance to identify a target’s identity infrastructure and determine whether Microsoft 365 (Azure AD) is in use.
+
+This directly affects the attack strategy, especially for password spraying.
 
 ---
 
-## Non-Microsoft 365 Domain Recon (hbhsec.com)
+## Attack Scenario
+
+An attacker aims to gain initial access by:
+
+1. Identifying the email/identity provider  
+2. Checking Microsoft 365 usage  
+3. Enumerating valid users  
+4. Performing password spraying  
+
+---
+
+## Phase 1: Non-Microsoft 365 Target Analysis (hbhsec.com)
 
 Command:
 trevorspray --recon hbhsec.com
 
 Findings:
-- Hostinger MX records
-- SPF Hostinger
-- OpenID invalid tenant
+- Hostinger MX records detected  
+- SPF configured for Hostinger  
+- OpenID returned invalid tenant  
+
+Analysis:
+- Email system is hosted on Hostinger  
+- No Microsoft 365 or Azure AD detected  
+
+Attacker Insight:
+- Microsoft-specific attacks will not work  
+- Alternative targets may include:
+  - Web login panels  
+  - Hosting control panels  
 
 Conclusion:
-Non-Microsoft 365 system
+Target does not use Microsoft 365.
 
 ---
 
-### Screenshots
+Screenshots:
 
 ![DNS](screenshots/hbhsec_dns.png)  
 ![Recon](screenshots/hbhsec_recon.png)  
@@ -27,23 +52,32 @@ Non-Microsoft 365 system
 
 ---
 
-## Microsoft 365 Recon (contoso.com)
+## Phase 2: Microsoft 365 Target Identification (contoso.com)
 
 Command:
 trevorspray --recon contoso.com
 
 Findings:
-- Outlook MX
-- Azure AD detected
-- Tenant ID present
-- Managed authentication system
+- Outlook MX records detected  
+- Azure AD identified  
+- Tenant ID present  
+- Managed authentication system  
+
+Analysis:
+- Target uses Microsoft 365 (Azure AD)  
+- Tenant ID confirms identity integration  
+
+Attacker Insight:
+- Suitable for password spraying  
+- User enumeration may be possible  
+- Centralized login increases attack impact  
 
 Conclusion:
-Enterprise Microsoft 365 system
+Valid Microsoft 365 target.
 
 ---
 
-### Screenshots
+Screenshots:
 
 ![Recon](screenshots/contoso_recon.png)  
 ![Tenant](screenshots/contoso_tenant.png)  
@@ -51,18 +85,47 @@ Enterprise Microsoft 365 system
 
 ---
 
-## Password Spraying Simulation (Lab Only)
+## Phase 3: User Enumeration (Concept)
 
-A controlled authentication testing simulation was performed to understand login behavior differences.
+After confirming Microsoft 365 usage:
 
-Focus:
-- Valid vs invalid response behavior
-- Authentication flow understanding
-- Security posture analysis
+Approach:
+- Identify email patterns  
+- Generate potential usernames  
+
+Attacker Insight:
+- Valid users can be identified via authentication responses  
+- This improves attack accuracy  
 
 ---
 
-### Screenshot
+## Phase 4: Password Spraying Simulation (Lab Only)
+
+A controlled test was performed to analyze authentication behavior.
+
+Focus:
+- Valid vs invalid username responses  
+- Authentication flow differences  
+
+Observation:
+- Valid users showed different response patterns compared to invalid users  
+
+Security Risk:
+- Attackers can identify valid users  
+- Targeted password spraying becomes possible  
+
+Impact:
+- Account takeover risk  
+- Unauthorized access  
+
+Mitigation:
+- Enable Multi-Factor Authentication (MFA)  
+- Apply account lockout policies  
+- Monitor login attempts  
+
+---
+
+Screenshot:
 
 ![Spray Output](screenshots/spray_lab_output.png)
 
@@ -70,4 +133,15 @@ Focus:
 
 ## Final Summary
 
-Learned how DNS and identity systems help identify enterprise infrastructure and authentication mechanisms.
+- DNS and MX records reveal email infrastructure  
+- Microsoft 365 detection is critical for attack planning  
+- Authentication responses can leak valid user info  
+- Password spraying is effective if protections are weak  
+
+---
+
+## Disclaimer
+
+This lab was conducted for educational purposes in a controlled environment. No real systems were targeted.
+
+---
